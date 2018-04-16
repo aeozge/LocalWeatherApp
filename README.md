@@ -1,5 +1,9 @@
 # LocalWeatherApp
 
+Local Weather Project!
+
+Free Code Camp-Front End Project.
+
 ![](https://raw.githubusercontent.com/erolozge/LocalWeatherApp/master/weather.png)
 
 Free Code Camp-Front End Project 
