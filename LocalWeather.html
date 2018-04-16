@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Weather</title>
+	
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<style type="text/css">
+body{  
+  background-image: url('https://image.ibb.co/gEm0FF/default.jpg');
+  //background-color: black;
+  background-size: cover;
+  margin: 0;
+  padding-top: 3em;
+  padding-bottom: 3em;
+  font-family: new times roman;
+}
+#weatherImage{
+  float: center;
+}
+.noMargin{
+  margin: 0;
+}
+#dataContent{
+  background-color: rgba(0,0,0,0.6);
+  color: white;
+  border-radius: 7px;
+  padding-top: 3em;
+  padding-bottom: 0.1em;
+}
+
+#mainTemp{
+  font-size: 4em;
+}
+#appName{
+  font-size: 4em;
+}
+#footer {
+  font-family: 'Josefin Sans', sans-serif;
+  position: relative;
+  font-size: 16px;
+  font-weight: normal;
+  margin-top: 80px;
+  width: 100%;
+  height: 40px;
+}
+
+#juanLunarPortfolio{
+  text-decoration: none;
+}
+
+.buttonSize{
+  font-size: 2.2em;  
+}
+ 
+}
+</style>
+<body>
+  <section class='container-fluid'>
+    <div id='dataContent' class='container'> 
+      <div class='row'>
+        <div class='col-sm-12 text-center'>          
+          <h1 id='appName'><strong>Local Weather</strong></h1>
+          <div id='celsiusToFahrenheit' class='btn-group'> 
+            <button id='toCelsius' class='btn btn-lg btn-primary  buttonSize '>°C</button>
+            <button id='toFahrenheit' class='btn btn-lg btn-secondary buttonSize'>°F</button>
+          </div>
+          <h1 id='mainTemp'></h1>
+          <h1 id='gradeCF'></h1>
+          <div id='weatherImageContainer' class="text-center"></div>
+          <h1 id='mainWeather' class='col-sm-12'></h1>
+          <h4 id='cityCountry' class='col-sm-12'></h4>
+        </div>
+        
+         <div class='col-sm-12 text-center'> 
+          <p id='lati' class='text-center col-sm-12 noMargin'></p>
+          <p id='long' class='text-center col-sm-12 noMargin'></p>
+        </div>        
+      </div><!-- row ends -->
+      <footer id="footer" class="text-center">
+  <div class="container">
+    Designed & Coded by
+    <a> Ozge</a>
+  </div>
+</footer>
+     
+    </div> <!-- Data content ends -->    
+  </section>  
+
+
+  <script type="text/javascript">
+   navigation(); 
+
+function navigation(){
+  navigator.geolocation.getCurrentPosition(getPos);
+}
+
+function getPos(position) {   
+  var getActualCoords = 'lat='+ position.coords.latitude + '&lon=' + position.coords.longitude;
+  loadData(getActualCoords);  
+} 
+
+function loadData(url){
+var requestURL = 'https://fcc-weather-api.glitch.me/api/current?' + url;
+   
+var request = new XMLHttpRequest();
+request.open('GET', requestURL);
+request.responseType = 'json';
+request.send();
+
+request.onload = function() {
+  var data = request.response;
+  showData(data);
+  showFahrenheitTemp(data);
+  showCelsiusTemp(data);  
+ }
+}
+
+function showData(jsonObj) {  
+  document.getElementById('cityCountry').innerHTML = '<strong>' +jsonObj.name +','  + jsonObj.sys['country'] + '</strong>' ; 
+  document.getElementById('mainTemp').textContent = parseFloat(jsonObj.main['temp'].toFixed(1));  
+  document.getElementById('weatherImageContainer').innerHTML = '<img id="weatherImage" src="' + jsonObj.weather[0].icon + '">';
+  document.getElementById('lati').textContent = 'Latitude: ' + jsonObj.coord['lat'];
+  document.getElementById('long').textContent = 'Longitude: ' + jsonObj.coord['lon'];
+  document.getElementById('mainWeather').textContent = jsonObj.weather[0].description;
+}
+ 
+function activeTempGrade(jsonObj){
+  if(jsonObj.main['temp'] == document.getElementById('mainTemp').textContent){
+    document.getElementById('toCelsius').classList.add('btn-primary');
+  }
+  else {    document.getElementById('toCelsius').removeClass('btn-primary');
+  };
+} 
+ 
+function showFahrenheitTemp(jsonObj){
+  document.getElementById('toFahrenheit').onclick = function(){
+    document.getElementById('toCelsius').classList.remove('btn-primary');
+    document.getElementById('toFahrenheit').classList.remove('btn-secondary');
+    document.getElementById('toFahrenheit').classList.add('btn-primary');
+    document.getElementById('toCelsius').classList.add('btn-secondary');
+    document.getElementById('mainTemp').textContent = parseFloat(((jsonObj.main['temp'] * 1.8) + 32).toFixed(1)); 
+  };
+}
+
+function showCelsiusTemp(jsonObj){
+  document.getElementById('toCelsius').onclick = function(){
+    document.getElementById('toFahrenheit').classList.remove('btn-primary');
+    document.getElementById('toCelsius').classList.remove('btn-secondary');
+    document.getElementById('toCelsius').classList.add('btn-primary');
+    document.getElementById('toFahrenheit').classList.add('btn-secondary');
+    document.getElementById('mainTemp').textContent = parseFloat(jsonObj.main['temp'].toFixed(1));
+  }
+}
+ 
+  </script>  
+</body>
+</html>
